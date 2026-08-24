@@ -7,3 +7,5 @@
 > Desk Pet by wwyyww721 🐾
 >
 > Auto-builds via GitHub Actions on every push. 🚀
+
+Re-enabled the workflow via UI toggle.
