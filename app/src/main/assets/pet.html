@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>pet</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:100%; height:100%; background: transparent; overflow: hidden; -webkit-user-select: none; user-select: none; touch-action: none; }
+  #stage { position: relative; width:100%; height:100%; display: flex; align-items: center; justify-content: flex-start; }
+  svg { width: 180px; height: 240px; display:block; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.25)); }
+  #bubble { position: absolute; top: 0; right: 0; background: rgba(255,255,255,0.92); border: 2px solid #7cc4ff; border-radius: 14px; padding: 6px 10px; font-family: "Noto Sans SC", sans-serif; font-size: 12px; color: #2b5f8a; white-space: nowrap; opacity: 0; transform: scale(0.6); transition: opacity .18s, transform .18s; pointer-events: none; }
+  #bubble.show { opacity:1; transform: scale(1); }
+  .blink { animation: blinkAnim 4s infinite; transform-origin: 50% 50%; }
+  @keyframes blinkAnim { 0%, 90%, 100% { transform: scaleY(1); } 93%, 96% { transform: scaleY(0.08); } }
+  .bounce { animation: bounceAnim .6s ease; }
+  @keyframes bounceAnim { 0%,100%{ transform: translateY(0); } 40%{ transform: translateY(-14px); } }
+  .sleep { animation: sleepAnim 5s infinite; transform-origin: 50% 100%; }
+  @keyframes sleepAnim { 0%,100%{ transform: translateY(0) scale(1); opacity:1; } 50%{ transform: translateY(6px) scale(0.96); opacity:0.85; } }
+</style>
+</head>
+<body>
+  <div id="stage">
+    <svg id="pet" viewBox="0 0 180 240" xmlns="http://www.w3.org/2000/svg">
+      <g id="tail" transform="translate(150,178) rotate(0 20 10)">
+        <path d="M20,10 C55,0 78,-14 92,-34" fill="none" stroke="#3f8fd8" stroke-width="16" stroke-linecap="round" opacity="0.9"/>
+      </g>
+      <ellipse cx="90" cy="160" rx="64" ry="52" fill="#4FA9EC"/>
+      <ellipse cx="78" cy="172" rx="30" ry="22" fill="#C7E6FB" opacity="0.6"/>
+      <g>
+        <ellipse cx="90" cy="108" rx="52" ry="50" fill="#5BB4F2"/>
+        <ellipse cx="72" cy="96" rx="18" ry="14" fill="#FFF" opacity="0.35"/>
+        <ellipse cx="52" cy="66" rx="14" ry="18" fill="#4A9DE2" transform="rotate(-25 52 66)"/>
+        <ellipse cx="128" cy="66" rx="14" ry="18" fill="#4A9DE2" transform="rotate(25 128 66)"/>
+        <g class="blink">
+          <ellipse cx="74" cy="104" rx="9" ry="10" fill="#22344a"/>
+          <ellipse cx="106" cy="104" rx="9" ry="10" fill="#22344a"/>
+          <ellipse cx="77" cy="101" rx="3.5" ry="3.5" fill="#fff"/>
+          <ellipse cx="109" cy="101" rx="3.5" ry="3.5" fill="#fff"/>
+        </g>
+        <path id="mouth" d="M82,126 Q90,138 98,126" fill="none" stroke="#2b5f8a" stroke-width="3" stroke-linecap="round"/>
+        <ellipse cx="62" cy="120" rx="8" ry="5" fill="#ffb3c1" opacity="0.6"/>
+        <ellipse cx="118" cy="120" rx="8" ry="5" fill="#ffb3c1" opacity="0.6"/>
+      </g>
+      <ellipse cx="66" cy="208" rx="16" ry="9" fill="#4A9DE2"/>
+      <ellipse cx="114" cy="208" rx="16" ry="9" fill="#4A9DE2"/>
+    </svg>
+    <div id="bubble"></div>
+  </div>
+<script>
+(function(){
+  var $svg = document.getElementById('pet');
+  var $tail = document.getElementById('tail');
+  var $bubble = document.getElementById('bubble');
+  var $mouth = document.getElementById('mouth');
+  var phrases = ["在看什么呢","想你了哦","要不要喝水呀","我在这儿陪你","主人~","喵?","天真好","偷偷看着你"];
+  var wakePhrases = ["呀！吓我一跳","你戳到我啦","嘿嘿，痒","别戳啦，我要生气咯"];
+  function bubble(text, ms){ $bubble.textContent = text; $bubble.classList.add('show'); clearTimeout(bubble._t); bubble._t = setTimeout(function(){ $bubble.classList.remove('show'); }, ms || 2200); }
+  function tailWag(){ $tail.style.transition = 'transform .25s'; $tail.style.transform = 'rotate(-16deg)'; setTimeout(function(){ $tail.style.transform = 'rotate(10deg)'; }, 130); setTimeout(function(){ $tail.style.transform = 'rotate(0)'; }, 300); }
+  function mouthOpen(){ $mouth.setAttribute('d', 'M76,124 Q90,144 104,124'); }
+  function mouthClose(){ $mouth.setAttribute('d', 'M82,126 Q90,138 98,126'); }
+  window.petEngine = {
+    onTap: function(){ $svg.classList.remove('bounce'); void $svg.offsetWidth; $svg.classList.add('bounce'); tailWag(); bubble(phrases[Math.floor(Math.random()*phrases.length)]); mouthOpen(); setTimeout(mouthClose, 1200); },
+    onDoubleTap: function(){ bubble(wakePhrases[Math.floor(Math.random()*wakePhrases.length)], 2500); tailWag(); mouthOpen(); setTimeout(mouthClose, 1400); },
+    onLongPress: function(){ bubble("呜……放手啦 >_<", 2600); mouthOpen(); setTimeout(mouthClose, 1600); },
+    onIdle: function(){ if(Math.random()<0.5){ bubble(phrases[Math.floor(Math.random()*phrases.length)]); tailWag(); } },
+    sleep: function(){ $svg.classList.add('sleep'); },
+    wake: function(){ $svg.classList.remove('sleep'); }
+  };
+})();
+</script>
+</body>
+</html>
