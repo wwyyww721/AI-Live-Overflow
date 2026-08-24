@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.SYNSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FORGEGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FORGEGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.PACKAGE_USAGe_STATS" tools:ignore="ProtectedPermissions" />
+
+    <application
+        android:label="Desk Pet"
+        android:icon="@drawable/ic_launcher_foreground"
+        android:allowBackup="true"
+        android:theme="@style/Theme.DeskPet">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.DeskPet.Translucent">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".service.OverlayService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="interactive pet overlay on screen" />
+        </service>
+    </application>
+</manifest>
